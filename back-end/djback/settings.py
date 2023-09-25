@@ -15,6 +15,7 @@ from pathlib import Path
 
 import mongoengine
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 load_dotenv()
 
@@ -52,7 +53,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "drf_spectacular_sidecar",
-    # Internal Apps
+    # Internal Apps (Remember to add the apps in order according to the models relationships)
+    # Check mongoengine documentation for more information
+    "articles",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -86,12 +90,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "djback.wsgi.application"
 
+#################################################################
 
-# MongoDB Engine
+# MongoDB Database Connection
 MONGODB_CONNECTION = os.getenv("MONGODB_CONNECTION")
+
+# MongoEngine Settins
 mongoengine.connect("djback", host=MONGODB_CONNECTION)
 
+# pymongo Settings
+client = MongoClient(MONGODB_CONNECTION)
 
+###############################################################
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",

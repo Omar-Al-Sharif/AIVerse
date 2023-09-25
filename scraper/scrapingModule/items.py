@@ -13,3 +13,4 @@ class Article(scrapy.Item):
     tags = scrapy.Field()
     published_time = scrapy.Field()
     modified_time = scrapy.Field()
+    outlet = scrapy.Field()

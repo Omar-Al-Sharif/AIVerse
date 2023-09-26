@@ -26,7 +26,7 @@ class CNNSpider(SitemapSpider):
         article_item["url"] = ''.join(response.url),
         article_item["title"] = response.css("div.headline__wrapper h1::text").get(),
         article_item["content"] = ''.join(response.css('div.article__content p::text').getall()),
-        article_item["tags"] =  [x.strip() for x in response.xpath('.//meta[@name="keywords"]/@content').get().split(',')]
+        article_item["tags"] = [x.strip() for x in response.xpath('.//meta[@name="keywords"]/@content').get().split(',')]
         article_item["published_time"] = response.xpath('.//meta[@property="article:published_time"]/@content').get()
         article_item["modified_time"] = response.xpath('.//meta[@property="article:modified_time"]/@content').get()
         article_item["outlet"] = "cnn"
@@ -52,7 +52,7 @@ class FoxSpiderSpider(SitemapSpider):
         article_item["url"] = ''.join(response.url),
         article_item["title"] = response.css("div h1.headline::text").get(),
         article_item["content"] = ''.join(response.css("div.article-body p::text").getall()),
-        article_item["tags"] =  response.xpath('.//meta[@name="classification-isa"]/@content').get().split(',')
+        article_item["tags"] = response.xpath('.//meta[@name="classification-isa"]/@content').get().split(',')
         article_item["published_time"] = response.xpath('.//meta[@name="dcterms.created"]/@content').get()
         article_item["modified_time"] = response.xpath('.//meta[@name="dcterms.modified"]/@content').get()
         article_item["outlet"] = "fox news"

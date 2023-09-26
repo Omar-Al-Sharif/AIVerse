@@ -19,6 +19,9 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework import routers
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 router = routers.DefaultRouter()
 # router.register("api/whatever", WhateverViewSet)
@@ -31,3 +34,6 @@ urlpatterns = [
     path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("__debug__/", include(debug_toolbar.urls)),
 ] + router.urls
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

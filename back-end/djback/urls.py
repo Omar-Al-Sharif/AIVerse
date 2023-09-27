@@ -21,10 +21,10 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from rest_framework import routers
 from django.conf import settings
 from django.conf.urls.static import static
-
+from articles.views import AiGeneratedArticleViewSet
 
 router = routers.DefaultRouter()
-# router.register("api/whatever", WhateverViewSet)
+router.register("api/article", AiGeneratedArticleViewSet, basename="article")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

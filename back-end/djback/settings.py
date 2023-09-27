@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # External Dependencies (installed with pip)
     "django_filters",
-    "rest_framework",
     "debug_toolbar",
+    "rest_framework",
     "rest_framework_mongoengine",
     "corsheaders",
     "drf_spectacular",
@@ -94,9 +94,9 @@ WSGI_APPLICATION = "djback.wsgi.application"
 
 # MongoDB Database Connection
 MONGODB_CONNECTION = os.getenv("MONGODB_CONNECTION")
-
+DATABASE_NAME = os.getenv("DATABASE_NAME")
 # MongoEngine Settins
-mongoengine.connect("djback", host=MONGODB_CONNECTION)
+mongoengine.connect(DATABASE_NAME, host=MONGODB_CONNECTION)
 
 # pymongo Settings
 client = MongoClient(MONGODB_CONNECTION)

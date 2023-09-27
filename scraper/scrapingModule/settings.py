@@ -12,9 +12,6 @@ BOT_NAME = "scrapingModule"
 SPIDER_MODULES = ["scrapingModule.spiders"]
 NEWSPIDER_MODULE = "scrapingModule.spiders"
 
-DELTAFETCH_ENABLE = True
-DELTAFETCH_DIR = "scraper\scrapingModule\delta_state"
-DELTAFETCH_RESET = False
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69"
@@ -47,10 +44,11 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-   # "scrapingModule.middlewares.ScrapingmoduleSpiderMiddleware": 543,
-   'scrapy_deltafetch.DeltaFetch': 100,
-}
+# SPIDER_MIDDLEWARES = {
+#     "scrapy_deltafetch.DeltaFetch": 100,
+# }
+
+# DELTAFETCH_ENABLED = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -67,8 +65,8 @@ SPIDER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "scrapingModule.pipelines.ScrapingmodulePipeline": 300,
-   "scrapingModule.pipelines.MongoDBPipeline": 500,
+    "scrapingModule.pipelines.ScrapingmodulePipeline": 300,
+    "scrapingModule.pipelines.MongoDBPipeline": 500,
 }
 
 # EXTENSIONS = {

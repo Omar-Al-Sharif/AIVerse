@@ -1,8 +1,12 @@
-from articles.models import AiGeneratedArticleInfo
+import os
+
+import mongoengine
+from articles.models import AiGeneratedArticle
 from articles.validators import validate_image_extension
 from cryptography import fernet
+from django.conf import settings
 from djback.settings import PUBLIC_KEY
-from mongoengine import Document, EmbeddedDocumentField, ValidationError, fields, signals
+from mongoengine import Document, ValidationError, fields, signals
 
 
 # File path for Images (relative to the media root)
@@ -14,34 +18,29 @@ def user_profile_picture_upload_path(instance, filename):
 
 
 class User(Document):
-    id = fields.SequenceField(primary_key=True, unique=True)
+    id = fields.SequenceField(primary_key=True)
     first_name = fields.StringField(required=True, max_length=20)
     last_name = fields.StringField(required=True, max_length=20)
     email = fields.EmailField(required=True, unique=True)
     password = fields.StringField(required=True, min_length=8, max_length=20)
     avg_reading_time = fields.IntField(default=0, min_value=0)
-    profile_picture = fields.ImageField(
-        size=(None, 1024**2 * 1), validation=validate_image_extension, upload_to=user_profile_picture_upload_path
-    )
-    # We are using a hybrid approach to store the articles that the user has liked and disliked
-    # Embedded documents contain the article info and the reference field contains the article id
-    reading_list = fields.ListField(EmbeddedDocumentField(AiGeneratedArticleInfo), default=[])
-    liked_articles = fields.ListField(EmbeddedDocumentField(AiGeneratedArticleInfo), default=[])
-    disliked_articles = fields.ListField(EmbeddedDocumentField(AiGeneratedArticleInfo), default=[])
+    profile_picture = fields.StringField(validation=validate_image_extension, required=False)
+
+    # Note when joining these lists with AiGeneratedArticle, project the content field to None if it wasn't needed
+    reading_list = fields.ListField(fields.ReferenceField(AiGeneratedArticle, unique=True), default=[])
+    liked_articles = fields.ListField(fields.ReferenceField(AiGeneratedArticle, unique=True), default=[])
+    disliked_articles = fields.ListField(fields.ReferenceField(AiGeneratedArticle, unique=True), default=[])
+    current_feed = fields.ListField(fields.ReferenceField(AiGeneratedArticle, unique=True), default=[])
 
     # liked and disliked tags are stored separately for recommendation purposes
-    liked_tags = fields.ListField(fields.StringField(max_length=30), default=[], unique=True)
-    disliked_tags = fields.ListField(fields.StringField(max_length=30), default=[], unique=True)
+    liked_tags = fields.ListField(fields.StringField(max_length=30, unique=True), default=[])
+    disliked_tags = fields.ListField(fields.StringField(max_length=30, unique=True), default=[])
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
     def clean(self):
         super.clean()
-
-        # Addtional validations
-        if self.profile_picture.width < 100 or self.profile_picture.height < 100:
-            raise ValidationError("Image dimensions should be at least 100x100")
 
         # Ensure non-overlapping liked and disliked tags
         overlap = set(self.liked_tags) & set(self.disliked_tags)
@@ -60,11 +59,7 @@ class User(Document):
     @classmethod
     def pre_delete(cls, sender, document, **kwargs):
         # Delete the profile picture when the user is deleted
-        for field in document._fields.values():
-            if isinstance(field, fields.ImageField):
-                file = getattr(document, field.name)
-                if file:
-                    file.delete(save=False)
+        os.remove(os.path.join(settings.MEDIA_ROOT, document.profile_picture))
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -77,6 +72,16 @@ class User(Document):
         self.password = fernet.Fernet(PUBLIC_KEY).encrypt(self.password.encode())
 
         super().save(*args, **kwargs)
+
+
+class Playlist(Document):
+    id = fields.SequenceField(primary_key=True, unique=True)
+    name = fields.StringField(required=True, max_length=30)
+    user = fields.ReferenceField(User, required=True, reverse_delete_rule=mongoengine.CASCADE)
+    articles = fields.ListField(fields.ReferenceField(AiGeneratedArticle, unique=True), default=[])
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 signals.pre_delete.connect(User.pre_delete, sender=User)  # Delete the profile picture when the user is deleted

@@ -1,0 +1,33 @@
+{
+  "editor.defaultFormatter": null,
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "none",
+  "python.formatting.blackArgs": ["--line-length", "119"],
+
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": ["--max-line-length", "119"],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // IMPORTANT!!!!! Put the path to your eslint config here (if it isn't in your project root)
+
+  "eslint.options": {
+    "configFile": "D:/My-Github/AIVerse/front-end/.eslintrc.cjs"
+  },
+  "eslint.workingDirectories": ["./front-end/*/**"],
+  "files.associations": {
+    "*.tsx": "typescriptreact"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -12,6 +12,7 @@ import sys
 from dateutil import parser
 import pymongo
 from scrapingModule.items import Article
+from scrapy.exceptions import DropItem
 
 
 class ScrapingmodulePipeline:
@@ -53,5 +54,9 @@ class MongoDBPipeline:
 
     def process_item(self, item, spider):
         data = dict(Article(item))
-        self.db[self.collection].insert_one(data)
+        exist = self.db[self.collection].find_one(data)
+        if exist:
+            raise DropItem(f"Duplicate item found: {item!r}")
+        else:
+            self.db[self.collection].insert_one(data)
         return item

@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "django_mongoengine",
+    "django_mongoengine.mongo_auth",
     # Internal Apps (Remember to add the apps in order according to the models relationships)
     # Check mongoengine documentation for more information
     "articles",
@@ -72,6 +74,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "djback.urls"
 
@@ -96,6 +99,8 @@ WSGI_APPLICATION = "djback.wsgi.application"
 #################################################################
 
 # MongoDB Database Connection
+SESSION_ENGINE = "django_mongoengine.sessions"
+SESSION_SERIALIZER = "django_mongoengine.sessions.BSONSerializer"
 MONGODB_CONNECTION = os.getenv("MONGODB_CONNECTION")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 # MongoEngine Settins
@@ -164,6 +169,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt_mongoengine.authentication.JWTAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
+
+AUTH_USER_MODEL = "mongo_auth.MongoUser"
 
 CORS_ALLOW_CREDENTIALS = True  # to accept cookies via ajax request
 # AUTH_USER_MODEL = "users.User"

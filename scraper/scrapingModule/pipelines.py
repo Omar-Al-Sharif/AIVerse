@@ -52,6 +52,10 @@ class MongoDBPipeline:
 
     def process_item(self, item, spider):
         data = dict(Article(item))
-        self.db[self.collection].insert_one(data)
+        exist = self.db[self.collection].find_one(data)
+        if exist:
+            pass
+        else:
+            self.db[self.collection].insert_one(data)
         return item
-    
+   

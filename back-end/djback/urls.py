@@ -15,17 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import debug_toolbar
+from articles.views import AiGeneratedArticleViewSet
+from users.views import UserViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework import routers
-from django.conf import settings
-from django.conf.urls.static import static
-from articles.views import AiGeneratedArticleViewSet
+from rest_framework_simplejwt_mongoengine.views import TokenRefreshView
+from users.views import MyTokenObtainPairView
 
 router = routers.DefaultRouter()
 router.register("api/article", AiGeneratedArticleViewSet, basename="article")
-
+router.register("api/user", UserViewSet, basename="user")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
@@ -33,6 +36,8 @@ urlpatterns = [
     path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("__debug__/", include(debug_toolbar.urls)),
+    path("api/token/", MyTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ] + router.urls
 
 if settings.DEBUG:

@@ -1,21 +1,69 @@
-from rest_framework.response import Response
+# from rest_framework.response import Response
 from rest_framework_mongoengine import viewsets
 
 from .models import User
 from .serializers import UserSerializer
 
+# from rest_framework_simplejwt_mongoengine.serializers import TokenObtainPairSerializer
+# from rest_framework_simplejwt_mongoengine.views import TokenObtainPairView
+
+
 # Create your views here.
+
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def validate(self, attrs):
+#         self.user = None
+#         username = attrs.get("email")
+#         password = attrs.get("password")
+
+#         # Authenticate user by email and password
+#         if username and password:
+#             self.user = self.authenticate(email=username, password=password)
+#         else:
+#             raise exceptions.AuthenticationFailed(
+#                 self.error_messages["no_active_account"],
+#                 "no_active_account",
+#             )
+
+#         # You can add additional checks here
+#         return {}
+
+#     @classmethod
+#     def authenticate(self, email, password):
+#         """
+#         Authenticate the request and return a user.
+#         You need to implement this method to authenticate by email and password.
+#         """
+
+#         # Here you can write your logic to authenticate the user by email and password
+#         # For example:
+#         user = User.objects.filter(email=email).first()
+#         if user and user.check_password(password):
+#             return user
+#         return None
+
+#     class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#         @classmethod
+#         def get_token(cls, user):
+#             token = super().get_token(user)
+
+#             # Add custom claims
+#             token["full_name"] = user.full_name
+#             # ...
+
+#             return token
+
+
+# class MyTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = MyTokenObtainPairSerializer
 
 
 # What shall we do here?
 # Create a view for login
-class UserSetView(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects
-
-    # signup
-    def create(self, request, *args, **kwargs):
-        pass
 
 
 # Create a view for signup

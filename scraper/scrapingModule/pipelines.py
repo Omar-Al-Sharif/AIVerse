@@ -4,15 +4,17 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-# useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
-from unidecode import unidecode
 import re
 import sys
-from dateutil import parser
+
 import pymongo
+from dateutil import parser
+
+# useful for handling different item types with a single interface
+from itemadapter import ItemAdapter
 from scrapingModule.items import Article
 from scrapy.exceptions import DropItem
+from unidecode import unidecode
 
 
 class ScrapingmodulePipeline:
@@ -60,4 +62,3 @@ class MongoDBPipeline:
         else:
             self.db[self.collection].insert_one(data)
         return item
-    

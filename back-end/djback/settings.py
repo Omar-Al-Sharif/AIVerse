@@ -64,6 +64,10 @@ INSTALLED_APPS = [
     "users",
 ]
 
+DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
+
+AUTH_USER_MODEL = "mongo_auth.MongoUser"
+MONGOENGINE_USER_DOCUMENT = "users.models.User"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -74,6 +78,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+SESSION_ENGINE = "django_mongoengine.sessions"
+SESSION_SERIALIZER = "django_mongoengine.sessions.BSONSerializer"
 
 
 ROOT_URLCONF = "djback.urls"
@@ -99,8 +106,7 @@ WSGI_APPLICATION = "djback.wsgi.application"
 #################################################################
 
 # MongoDB Database Connection
-SESSION_ENGINE = "django_mongoengine.sessions"
-SESSION_SERIALIZER = "django_mongoengine.sessions.BSONSerializer"
+
 MONGODB_CONNECTION = os.getenv("MONGODB_CONNECTION")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 # MongoEngine Settins
@@ -108,6 +114,10 @@ mongoengine.connect(DATABASE_NAME, host=MONGODB_CONNECTION)
 
 # pymongo Settings
 client = MongoClient(MONGODB_CONNECTION)
+
+MONGODB_DATABASES = {
+    "default": {"name": DATABASE_NAME, "host": MONGODB_CONNECTION},
+}
 
 
 ###############################################################
@@ -167,10 +177,9 @@ REST_FRAMEWORK = {
     # YOUR SETTINGS
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt_mongoengine.authentication.JWTAuthentication",),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
 }
 
-AUTH_USER_MODEL = "mongo_auth.MongoUser"
 
 CORS_ALLOW_CREDENTIALS = True  # to accept cookies via ajax request
 # AUTH_USER_MODEL = "users.User"

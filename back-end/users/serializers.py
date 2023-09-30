@@ -6,4 +6,8 @@ from .models import User
 class UserSerializer(serializers.DocumentSerializer):
     class Meta:
         model = User
-        exclude = ["password", "id"]
+        fields = [
+            "email",
+            "password",
+            "full_name",
+        ]

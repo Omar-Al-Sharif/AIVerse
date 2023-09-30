@@ -63,7 +63,7 @@ from .serializers import UserSerializer
 # Create a view for login
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects
+    queryset = User.objects.all()
 
 
 # Create a view for signup
